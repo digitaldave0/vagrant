@@ -1,13 +1,14 @@
 #!/bin/bash
 sudo apt-get update -y
 apt -y install openjdk-8-jdk
+apt -y install wget
 
 dpkg -s jenkins &>/dev/null || {
-wget -q -O - https://pkg.jenkins.io/debian/jenkins-ci.org.key | sudo apt-key add -
-echo deb https://pkg.jenkins.io/debian-stable binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list
+wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -
+sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
 apt-get update -y
 apt -y install jenkins
-service jenkins start
+sudo systemctl status jenkins.service
 }
 curl http://localhost:8080
 cat /var/lib/jenkins/secrets/initialAdminPassword
