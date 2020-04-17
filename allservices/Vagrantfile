@@ -1,0 +1,43 @@
+Vagrant.configure("2") do |config|
+
+  
+  config.vm.define "dev" do |dev|
+  dev.vm.box = "ubuntu/trusty64"
+  dev.vm.hostname = "chefwrkst-dev"
+  dev.vm.provision "shell", path: "provision.sh"
+  end
+
+  config.vm.define "python" do |python|
+  python.vm.box = "ubuntu/bionic64"
+  python.vm.hostname = "python-wrkst"
+  python.vm.provision "shell", path: "installpython.sh"
+  end
+
+  config.vm.define "prod" do |prod|
+  prod.vm.box = "ubuntu/bionic64"
+  prod.vm.hostname = "prod-ami"
+  prod.vm.provision "shell", path: "installpython.sh"
+  end
+
+  config.vm.define "jenkins" do |jenkins|
+    jenkins.vm.box = "ubuntu/bionic64"
+    jenkins.vm.hostname = "jenkins-dev"
+    jenkins.vm.provision "shell", path: "installjenkins.sh"
+    jenkins.vm.network "forwarded_port", guest: 8080, host: 9090, id: "jenkins"
+  end
+  
+  config.vm.define "lamp" do |lamp|
+    lamp.vm.box = "ubuntu/bionic64"
+    lamp.vm.hostname = "lamp-dev"
+    lamp.vm.provision "shell", path: "installamp.sh"
+    lamp.vm.network "forwarded_port", guest: 8080, host: 9090, id: "lamp"
+  end
+  
+
+  config.vm.define "chefwrk" do |chefwrk|
+    chefwrk.vm.box = "centos/7"
+    chefwrk.vm.hostname = "chefwrks03"
+    chefwrk.vm.provision "shell", path: "installchefwrk.sh"    
+    end
+
+end

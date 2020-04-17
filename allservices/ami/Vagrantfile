@@ -1,0 +1,30 @@
+#vagrant up prod --provider aws
+Vagrant.configure("2") do |config|
+    
+config.vm.define "dev" do |dev|
+  dev.vm.box = "ubuntu/bionic64"
+  dev.vm.hostname = "test-dev"
+end
+
+config.vm.define "prod" do |prod|
+  prod.vm.box = "dummy"
+  prod.vm.hostname = "test-dev"
+  prod.vm.provider "aws" do |aws, override|
+    aws.region_config "eu-west-1", :ami => "ami"
+    aws.region = "eu-west-1"
+
+    aws.tags = {
+      'Name' => 'Test'
+    }
+
+    override.ssh.username = "ubuntu"
+    aws.keypair_name = "daveskey"
+    override.ssh.private_key_path = "~/.ssh/daveskey.pem"
+
+    aws.access_key_id = ""
+    aws.secret_access_key = ""
+  
+  end
+end
+
+end
