@@ -1,7 +1,7 @@
 
 ---
 #
-# Playbook to install the ELK stack + Beats
+# Playbook to install the ELK stack + metric beat
 #
 - hosts: buildelk1
   remote_user: vagrant
@@ -10,5 +10,5 @@
   roles:
   - { role: java }
   - { role: elasticsearch }
-  # - { role: kibana }
-  # - { role: metricbeat }
+  - { role: kibana }
+  - { role: metricbeat }
