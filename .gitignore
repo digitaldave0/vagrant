@@ -9,6 +9,8 @@
 acceptance_config.yml
 boxes/*
 /.vagrant
+/build_elk_stack/.vagrant
+/build_elk_stack/*.log
 /website/.vagrant
 /website/build
 /vagrant-spec.config.rb
