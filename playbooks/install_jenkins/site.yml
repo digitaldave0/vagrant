@@ -1,0 +1,14 @@
+---
+- name: Provision a Jenkins CI server
+  hosts: jenkins
+  remote_user: vagrant
+  become: yes
+  become_user: root
+  vars:
+    - update_apt_cache: yes
+
+  roles:
+#    - base
+#    - certbot
+     - jenkins
+#    - nginx
