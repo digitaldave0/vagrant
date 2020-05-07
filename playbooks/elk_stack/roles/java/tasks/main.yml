@@ -19,6 +19,6 @@
 
 - name: Install Java 8
   apt:
-   name: oracle-java8-set-default
+   name:  openjdk-8-jre-headless, default-jdk
    state: present
    update_cache: yes
