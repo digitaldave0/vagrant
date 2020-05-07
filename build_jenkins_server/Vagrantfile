@@ -1,0 +1,10 @@
+Vagrant.configure("2") do |config|
+  config.vm.define "jenkins" do |jenkins|
+    jenkins.vm.box = "ubuntu/bionic64"
+    jenkins.vm.hostname = "jenkins-dev"
+    jenkins.vm.network "forwarded_port", guest: 8080, host: 9090, id: "jenkins"
+    jenkins.vm.provision :ansible do |ansible|
+      ansible.playbook = "../playbooks/install_jenkins/site.yml"
+        end
+    end
+end
