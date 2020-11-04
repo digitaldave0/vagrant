@@ -1,0 +1,50 @@
+---
+- name: Remove docker if installed from CentOS repo
+  yum:
+       name: "{{ item }}"
+       state: removed
+
+  with_items:
+    - docker
+    - docker-client
+    - docker-client-latest
+    - docker-common
+    - docker-latest
+    - docker-latest-logrotate
+    - docker-logrotate
+    - docker-engine
+
+- name: Install yum utils
+  yum:
+      name: "{{ item }}"
+      state: latest
+  with_items:
+        - yum-utils
+        - device-mapper-persistent-data
+        - lvm2
+
+- name: Add Docker repo
+  get_url:
+      url: https://download.docker.com/linux/centos/docker-ce.repo
+      dest: /etc/yum.repos.d/docker-ce.repo
+
+- name: Install containerd.io
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+        - docker-ce
+        - docker-ce-cli
+        - containerd.io
+    
+- name: Start Docker service
+  service:
+    name: docker
+    state: started
+    enabled: yes
+  
+- name: Add user vagrant to docker group
+  user:
+      name: vagrant
+      groups: docker
+      append: yes

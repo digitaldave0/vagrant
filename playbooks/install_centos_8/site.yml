@@ -1,0 +1,12 @@
+---
+- name: Provision docker server
+  hosts: centos8
+  remote_user: vagrant
+  become: yes
+  become_user: root
+  vars:
+#    - update_apt_cache: yes
+
+  roles:
+    - base
+    - docker

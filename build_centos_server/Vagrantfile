@@ -1,0 +1,21 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# add host updater
+ if Vagrant.has_plugin? 'vagrant-hostsupdater'
+  config.hostsupdater.aliases = aliases
+else
+  puts 'vagrant-hostsupdater missing, please install the plugin:'
+  puts 'vagrant plugin install vagrant-hostsupdater'
+end
+
+Vagrant.configure("2") do |config|
+  config.vm.define "centos8" do |centos|
+    centos.vm.box = "centos/8"
+    centos.vm.hostname = "docker-dev"
+    centos.vm.provision :ansible do |ansible|
+      ansible.compatibility_mode = "2.0"
+      ansible.playbook = "../playbooks/install_centos_8/site.yml"
+    end
+  end
+end
