@@ -7,14 +7,14 @@
 
 - name: Install key for the Jenkins apt repository
   apt_key:
-    url: "https://pkg.jenkins.io/debian/jenkins-ci.org.key"
+    url: "https://pkg.jenkins.io/debian-stable/jenkins.io.key"
     state: present
 
 - name: Install access to the Jenkins apt repository
   apt_repository:
-   repo: deb http://pkg.jenkins.io/debian-stable binary/
+   repo:  deb https://pkg.jenkins.io/debian-stable binary/
    state: present
-   filename: 'jenkins-stable'
+   filename: 'jenkins'
 
 - name: APT Update for the Jenkins repository
   command: apt update
