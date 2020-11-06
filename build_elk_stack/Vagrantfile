@@ -1,24 +1,43 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
 
-# create ubuntu server and install elk stack via playbook uses port 6601 for kibana dashboard
-my_box_image = "ubuntu/bionic64"
-buildelk_count = 1
-my_mem_size = 4096
-my_cpu_count = 2
-
-(1..buildelk_count).each do |i|
+ # add host updater
+ if Vagrant.has_plugin? 'vagrant-hostsupdater'
+  config.hostsupdater.aliases = aliases
+else
+  puts 'vagrant-hostsupdater missing, please install the plugin:'
+  puts 'vagrant plugin install vagrant-hostsupdater'
+end
 Vagrant.configure("2") do |config|
-
-config.vm.define "buildelk#{i}" do |buildelk|
-config.vm.provider "virtualbox" do |v|
-  v.memory = my_mem_size
-  v.cpus = my_cpu_count
-buildelk.vm.box = my_box_image
-buildelk.vm.hostname = "elkserver-#{i}"
-buildelk.vm.network "forwarded_port", guest: 5601, host: 6601, id: "buildelk#{i}"
-buildelk.vm.provision :ansible do |ansible|
-  ansible.playbook = "../playbooks/elk_stack/site.yml"
-        end
-      end
-    end
+  config.vm.provider :virtualbox do |vb|
+    vb.gui = false
+    vb.customize ["modifyvm", :id, "--memory", "2048"]
+    vb.customize ["modifyvm", :id, "--cpus", "2"]
+    vb.customize ["modifyvm", :id, "--hwvirtex", "on"]      
+end
+    
+config.vm.define "eks" do |eks|
+  eks.vm.box = "peru/ubuntu-18.04-server-amd64"
+  eks.vm.hostname = "eks"
+  eks.vm.network "forwarded_port", guest: 5601, host: 6601, id: "eks"
+  eks.vm.provision :ansible do |ansible|
+    ansible.playbook = "../playbooks/elk_stack/site.yml"
   end
 end
+
+config.vm.define "beat" do |beat|
+  beat.vm.box = "peru/ubuntu-18.04-server-amd64"
+  beat.vm.hostname = "beat"
+  beat.vm.provision :ansible do |ansible|
+    ansible.playbook = "../playbooks/elk_stack/site.yml"
+  end
+end
+
+config.vm.define "elk" do |elk|
+    elk.vm.box = "peru/ubuntu-18.04-server-amd64"
+    elk.vm.hostname = "elk"
+    elk.vm.provision :ansible do |ansible|
+      ansible.playbook = "../playbooks/elk_stack/site.yml"
+    end
+  end
+end  

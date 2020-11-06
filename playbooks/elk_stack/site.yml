@@ -3,12 +3,33 @@
 #
 # Playbook to install the ELK stack + metric beat
 #
-- hosts: buildelk1
+- name: eks only
+  hosts: eks
   remote_user: vagrant
   become: yes
   become_user: root
+  
   roles:
-  - { role: java }
-  - { role: elasticsearch }
-  - { role: kibana }
-  - { role: metricbeat }
+    - { role: java }
+    - { role: elasticsearch }
+
+- name: elk only role
+  hosts: elk
+  remote_user: vagrant
+  become: yes
+  become_user: root
+
+  
+  roles:
+    - { role: java }
+    - { role: kibana }
+    
+- name: filebeat only
+  hosts: beat
+  remote_user: vagrant
+  become: yes
+  become_user: root
+
+  roles:
+    - { role: java }
+    - { role: filebeat }

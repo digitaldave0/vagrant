@@ -2,9 +2,12 @@
 ---
 #
 # Installing Java 8
-#
 
-# Add the Java repo
+- name: APT Update
+  command: apt update
+    
+- name: Install prereq
+  command: apt install curl gnupg-agent software-properties-common gnupg -y
 
 - name: Add the Java PPA repo
   apt_repository: 
