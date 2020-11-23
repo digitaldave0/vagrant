@@ -37,11 +37,6 @@
         - docker-ce-cli
         - containerd.io
     
-- name: Start Docker service
-  service:
-    name: docker
-    state: started
-    enabled: yes
   
 - name: Add user vagrant to docker group
   user:

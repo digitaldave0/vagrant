@@ -8,6 +8,8 @@ end
 config.vm.define "docker" do |docker|
   docker.vm.box = "peru/ubuntu-18.04-server-amd64"
   docker.vm.hostname = "docker"
+  #docker.vm.network "public_network", bridge: "wlp3s0", ip: "192.168.105.113"
+  docker.vm.network "forwarded_port", guest: 8080, host: 9090, id: "docker"
   docker.vm.provision "shell", path: "../scripts/docker.sh"
   end
 end
