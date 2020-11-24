@@ -1,0 +1,18 @@
+# Playbook to upgrade Python on ubuntu from 2.7 to 3.6
+
+- hosts: all
+  become: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  # install python idle on workstation
+  tasks:
+    - name: Install aptitude using apt
+      apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
+
+    - name: Install required system packages
+      apt: name={{ item }} state=latest update_cache=yes
+      loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools', 'python3.8']
+
+
+    - name: Update apt and install idle-python3.8
+      apt: update_cache=yes name=idle-python3.8 state=latest

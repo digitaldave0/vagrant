@@ -1,0 +1,7 @@
+[vagrant:children]
+ubuntu
+docker-dev
+
+[vagrant:vars]
+ansible_user=vagrant
+ansible_port=22 

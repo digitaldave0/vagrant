@@ -1,0 +1,26 @@
+---
+- hosts: ubuntu
+  remote_user: dave
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: Install pip
+      apt: name=python-pip state=present
+    - name: install docker-py package
+      pip: name=docker-py
+
+    - name: Build Docker image from Dockerfile
+      docker_image:
+        name: web
+        path: /
+        state: present
+      
+    - name: Running the container
+      docker_container:
+        name: web
+        image: web:latest
+        path: docker
+        state: running
+    
+    - name: Check if container is running
+      shell: docker ps

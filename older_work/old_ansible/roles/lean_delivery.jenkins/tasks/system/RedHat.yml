@@ -1,0 +1,8 @@
+---
+- name: Enable EPEL repository
+  yum:
+    name: '{{ jenkins_epel_url }}'
+    state: present
+  register: status
+  until: status is succeeded
+  become: true

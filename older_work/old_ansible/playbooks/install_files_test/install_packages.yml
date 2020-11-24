@@ -1,0 +1,22 @@
+- name: Install files on laptop
+  gather_facts: true
+  hosts: ubuntu
+  tags: installpackages
+  tasks:
+  - apt:
+     pkg:
+       - ruby
+       - vim
+       - python3
+       - nano
+       - jq
+     state: latest
+- name: Copy files to Projects
+  hosts: ubuntu
+  tags: copyfiles
+  tasks:
+  - copy:
+      src: "mytestfile" 
+      dest: "~/Projects"
+  become: true
+  become_user: root
