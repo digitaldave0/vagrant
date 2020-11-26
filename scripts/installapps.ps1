@@ -4,7 +4,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManage
 
   Try
 {
-$devpackages = @("virtualbox-guest-additions-guest.install","vagrant","notepadplusplus","terraform","git.install") 
+$devpackages = @("virtualbox-guest-additions-guest.install","notepadplusplus","terraform","git.install") 
 foreach ($packages in $devpackages) {
 write-host "Installing - $packages at $Time"
   choco install $packages -y
