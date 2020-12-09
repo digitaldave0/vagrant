@@ -50,7 +50,7 @@ config.vm.define "pxe" do |pxe|
   pxe.vm.box = "bento/ubuntu-20.04"
   pxe.vm.hostname = "pxeserver"
   pxe.vm.network "public_network", bridge: "wlp3s0", auto_config: false
-  pxe.vm.synced_folder  "../../scripts/", "/vagrant"
+  pxe.vm.synced_folder  "../scripts/", "/vagrant"
 
 # setup manual ip for eth1 
 config.vm.provision "shell", run: "always", inline: <<-SHELL
@@ -61,8 +61,8 @@ route add default gw #{GW}
 eval `route -n | awk '{ if ($8 ==\"eth0\" && $2 != \"0.0.0.0\") print \"route del default gw \" $2; }'`
 SHELL
 
-config.vm.provision "file", source: "../../scripts/dnsmasq.conf", destination: "/tmp/dnsmask.conf"
-config.vm.provision "file", source: "../../scripts/#{FILE}", destination: "/tmp/#{FILE}"
+config.vm.provision "file", source: "../scripts/dnsmasq.conf", destination: "/tmp/dnsmask.conf"
+config.vm.provision "file", source: "../scripts/#{FILE}", destination: "/tmp/#{FILE}"
 
 # install pxe server
 config.vm.provision "shell", run: "always", inline: $script
