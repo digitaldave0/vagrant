@@ -110,6 +110,7 @@ end
     chefwrk.vm.provision "shell", path: "../scripts/installchefwrk.sh"    
     end
 
+    
 
 config.vm.provision "ansible" do |ansible|
 ansible.playbook = "../playbooks/setup_ubuntu1804/playbook.yml"

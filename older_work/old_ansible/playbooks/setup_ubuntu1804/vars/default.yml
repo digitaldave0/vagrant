@@ -1,5 +1,0 @@
----
-create_user: dave
-my_email: dave@me.com
-copy_local_key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
-sys_packages: [ 'curl', 'vim', 'git', 'ufw','ruby','python3','build-essential','libssl-dev','libffi-dev','python-dev']

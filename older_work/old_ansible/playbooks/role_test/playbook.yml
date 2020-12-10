@@ -1,9 +1,0 @@
----
-- hosts: all
-  become: true
-  roles:
-    - roles/apache
-    - roles/geerlingguy.php
-  vars:
-    - doc_root: /var/www/example
-    - php_default_version_debian: "7.2"

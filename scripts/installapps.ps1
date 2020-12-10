@@ -7,8 +7,15 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManage
 $devpackages = @("virtualbox-guest-additions-guest.install","notepadplusplus","terraform","git.install") 
 foreach ($packages in $devpackages) {
 write-host "Installing - $packages at $Time"
-  choco install $packages -y
-  } 
+  choco install $packages -y 
+  }
+  if ($PSVersionTable.PSEdition -eq 'Desktop' -and (Get-Module -Name AzureRM -ListAvailable)) {
+    Write-Warning -Message ('Az module not installed. Having both the AzureRM and ' +
+      'Az modules installed at the same time is not supported.')
+  } else {
+    write-host "Installing Azure Modules for Powershell" 
+    Install-Module -Name Az -AllowClobber -Scope AllUsers -Force -Confirm:$False
+}
 }
   Catch
   {
@@ -21,4 +28,3 @@ write-host "Installing - $packages at $Time"
     "This script made a read attempt at $Time"
     Restart-Computer -Force
 }
-
