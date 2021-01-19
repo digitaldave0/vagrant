@@ -1,0 +1,60 @@
+USERNAME = "dave"
+PASSWORD = "letmein"
+$script = <<-SCRIPT
+sudo apt update -y && sudo apt upgrade -y
+sudo apt install net-tools -y
+sudo apt-get install software-properties-common -y
+sudo apt update
+sudo add-apt-repository ppa:transmissionbt/ppa -y
+sudo apt install transmission-gtk gufw -y
+sudo adduser --gecos "" --disabled-password #{USERNAME}
+sudo chpasswd <<<"#{USERNAME}:#{PASSWORD}"
+
+sudo usermod -a -G adm #{USERNAME}
+sudo usermod -a -G sudo #{USERNAME}
+sudo usermod -a -G cdrom #{USERNAME}
+sudo usermod -a -G dip #{USERNAME}
+sudo usermod -a -G lpadmin #{USERNAME}
+sudo usermod -a -G sambashare #{USERNAME}
+sudo usermod -a -G vagrant #{USERNAME}
+sudo timedatectl set-timezone Europe/London
+sudo locale-gen en_GB en_GB.UTF-8
+sudo update-locale LANG=en_GB.UTF-8
+
+
+#setup firewall
+sudo ufw enable
+sudo ufw default deny incoming && sudo ufw default deny outgoing
+sudo ufw allow from 192.168.5.0/24 to any port 22
+sudo ufw allow from 192.168.5.0/24 to any port 2222  
+sudo ufw allow out 25,22,2222,53,80,110,443/tcp
+sudo ufw allow out 53,67,68/udp
+sudo ufw allow out 51413/tcp
+sudo ufw allow out 51413/udp
+sudo ufw allow out 6969/tcp
+sudo ufw --force disable
+
+#setup vpn
+wget -P /tmp/ https://ocean.surfshark.com/debian/pool/main/s/surfshark-release/surfshark-release_1.0.0-1.1_amd64.deb
+dpkg -i /tmp/surfshark-release_1.0.0-1.1_amd64.deb
+sudo apt update 
+sudo apt-get install surfshark-vpn -y
+
+SCRIPT
+
+
+
+Vagrant.configure("2") do |config|
+  config.vm.provider :virtualbox do |vb|
+    vb.customize ["modifyvm", :id, "--memory", "2048"]
+    vb.customize ["modifyvm", :id, "--cpus", "2"]
+    vb.customize ["modifyvm", :id, "--hwvirtex", "on"]   
+       
+end
+
+config.vm.define "devops" do |devops|
+  devops.vm.box = "peru/ubuntu-18.04-desktop-amd64"
+  devops.vm.box_version = "20210104.01"
+  devops.vm.provision "shell", run: "always", inline: $script
+  end
+end  
