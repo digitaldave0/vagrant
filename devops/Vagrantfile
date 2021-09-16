@@ -1,38 +1,39 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+BOXFILE = "ubuntu/focal64"
 
-$install_tools = <<-'SCRIPT'
-echo "installing docker"
-sudo apt install apt-transport-https ca-certificates curl gnupg lsb-release -y
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-echo \
-"deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
-$(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-sudo apt update -y
-sudo apt-get install docker-ce docker-ce-cli containerd.io -y
-sudo groupadd docker
-sudo usermod -aG docker $USER
-
-
-echo "installing node"
-cd ~
-curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh
-sudo bash nodesource_setup.sh
-sudo apt install nodejs
-node -v
-
-
-echo "installing python3"
-sudo apt install git -y
-sudo apt install python3-dev -y
-sudo apt install python3-pip -y
-sudo apt install python3.8-venv -y
-python3 -V
-SCRIPT
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "ubuntu/focal64"
-  config.vm.hostname = "devops"
-  config.vm.provision "shell", privileged: false, inline: $install_tools 
-end
+
+  config.vm.define "docker" do |docker|
+    docker.vm.box = "#{BOXFILE}"
+    docker.vm.hostname = "devops"
+    docker.vm.provision "shell", path: "../scripts/install_docker.sh"
+  end 
+  
+    config.vm.define "node" do |node|
+      node.vm.box = "#{BOXFILE}"
+      node.vm.hostname = "devops"
+      node.vm.provision "shell", path: "../scripts/install_node.sh"
+  end
+    
+    config.vm.define "python" do |python|
+      python.vm.box = "#{BOXFILE}"
+      python.vm.hostname = "devops"
+      python.vm.provision "shell", path: "../scripts/install_python.sh"
+  end
+      
+    config.vm.define "go" do |go|
+      go.vm.box = "#{BOXFILE}"
+      go.vm.hostname = "devops"
+      go.vm.provision "shell", path: "../scripts/install_go.sh"
+  end  
+    
+    config.vm.define "jenkins" do |jenkins|
+      jenkins.vm.box = "#{BOXFILE}"
+      jenkins.vm.hostname = "jenkins-dev"
+      jenkins.vm.provision "shell", path: "../scripts/installjenkins.sh"
+      jenkins.vm.network "forwarded_port", guest: 8080, host: 9090, id: "jenkins"
+  end
+end  
