@@ -7,5 +7,4 @@ boxes/*
 /website/.vagrant
 /website/build
 /vagrant-spec.config.rb
-/build_jenkins_server/.vagrant/*
 test/vagrant-spec/.vagrant/agrant-spec.config.rb
