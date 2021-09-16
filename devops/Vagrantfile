@@ -14,6 +14,15 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io -y
 sudo groupadd docker
 sudo usermod -aG docker $USER
 
+
+echo "installing node"
+cd ~
+curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh
+sudo bash nodesource_setup.sh
+sudo apt install nodejs
+node -v
+
+
 echo "installing python3"
 sudo apt install git -y
 sudo apt install python3-dev -y
