@@ -1,0 +1,91 @@
+
+BOXFILE ="bento/ubuntu-20.04"
+#FILE="ubuntu-18.04.5-live-server-amd64.iso"
+IP = "192.168.4.155"
+GW = "192.168.4.1"
+
+#*$script = <<-SCRIPT
+#sudo apt install -y dnsmasq
+#sudo systemctl stop systemd-resolved
+#sudo ss -lp "sport = :domain"
+#  sudo mkdir -p /netboot/tftp
+#  cp -f /tmp/dnsmask.conf /etc/dnsmasq.conf
+#  sudo systemctl start dnsmasq
+#  sudo systemctl start systemd-resolved
+#  sudo apt install -y nfs-kernel-server -y
+#  sudo mkdir /netboot/nfs
+#  sudo echo -n "/netboot/nfs  *(rw,all_squash,sync,no_subtree_check)">>  /etc/exports
+#  sudo exportfs -a
+#  sudo apt install -y syslinux pxelinux
+#  sudo cp -v /usr/lib/PXELINUX/pxelinux.0 /netboot/tftp/
+#  sudo cp -v  /usr/lib/syslinux/modules/bios/{ldlinux.c32,libcom32.c32,libutil.c32,vesamenu.c32} /netboot/tftp
+#  sudo mkdir /netboot/tftp/pxelinux.cfg
+#  sudo touch /netboot/tftp/pxelinux.cfg/default
+#  sudo mkdir -v /netboot/{nfs,tftp}/ubuntu1804
+#  sudo mkdir -v /media/test
+#  sudo mount -o loop /tmp/#{FILE} /media/test/
+#  sudo cp -Rfv /media/test/* /netboot/nfs/ubuntu1804/
+#  sudo cp -f /netboot/nfs/ubuntu1804/casper/vmlinuz /netboot/tftp/ubuntu1804/
+#  sudo cp -f /netboot/nfs/ubuntu1804/casper/initrd /netboot/tftp/ubuntu1804/
+#  sudo chmod -Rfv 777 /netboot
+#  sudo umount /media/test
+#  sudo rm -f /tmp/#{FILE}
+ 
+#  sudo echo -n "
+#  default vesamenu.c32
+ 
+ 
+#label install1
+#menu label ^Install Ubuntu 18.04 LTS Server
+#menu default
+#kernel ubuntu1804/vmlinuz
+#append initrd=ubuntu1804/initrd boot=casper netboot=nfs nfsroot=192.168.50.1:/netboot/nfs/ubuntu1804/ splash toram ---
+#" >> /netboot/tftp/pxelinux.cfg/default
+#sudo chown -Rfv nobody:nogroup /netboot/nfs/*
+#SCRIPT
+
+Vagrant.configure("2") do |config|
+
+
+#config.vm.define "pxe" do |pxe|
+ # pxe.vm.box = "#{BOXFILE}"
+ # pxe.vm.hostname = "pxeserver"
+ # pxe.vm.network "public_network", bridge: "wlp3s0", auto_config: false
+ # pxe.vm.synced_folder  "../scripts/", "/vagrant"
+
+# setup manual ip for eth1 
+#config.vm.provision "shell", run: "always", inline: <<-SHELL
+#sudo apt update -y
+#sudo apt install net-tools -y
+#ifconfig eth1 #{IP} netmask 255.255.255.0 up
+#route add default gw #{GW}
+#eval `route -n | awk '{ if ($8 ==\"eth0\" && $2 != \"0.0.0.0\") print \"route del default gw \" $2; }'`
+#SHELL
+
+#config.vm.provision "file", source: "../scripts/dnsmasq.conf", destination: "/tmp/dnsmask.conf"
+#config.vm.provision "file", source: "../../stuff/scripts/#{FILE}", destination: "/tmp/#{FILE}"
+
+# install pxe server
+#config.vm.provision "shell", run: "always", inline: $script
+#end
+
+
+config.vm.define "dev" do |dev|
+  dev.vm.box = "#{BOXFILE}"
+  dev.vm.hostname = "chefwrkst-dev"
+  dev.vm.provision "shell", path: "../scripts/provision.sh"
+end
+
+  config.vm.define "jenkins" do |jenkins|
+    jenkins.vm.box = "#{BOXFILE}"
+    jenkins.vm.hostname = "jenkins-dev"
+    jenkins.vm.provision "shell", path: "../scripts/install-jenkins.sh"
+    jenkins.vm.network "forwarded_port", guest: 8080, host: 9090, id: "jenkins"
+  end
+  
+    
+
+#config.vm.provision "ansible" do |ansible|
+#ansible.playbook = "../playbooks/setup_ubuntu1804/playbook.yml"
+ # end
+end
